@@ -97,7 +97,7 @@
   .saved .dot{width:8px;height:8px;border-radius:50%;background:var(--line-strong);}
   .saved.ok{color:var(--green);} .saved.ok .dot{background:var(--green);}
 
-  .times{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;}
+  .times{display:grid; grid-template-columns:1fr; gap:10px; margin-bottom:12px;}
   .field{min-width:0;}
   .field label{display:block; font-size:11px; color:var(--ink-2); margin-bottom:5px; text-transform:uppercase; letter-spacing:.03em;}
   .field input[type=time]{width:100%; min-width:0; box-sizing:border-box; font-family:inherit; font-size:16px; color:var(--ink); background:var(--field); border:1px solid var(--line-strong); border-radius:9px; padding:11px 12px; height:46px;}
@@ -154,7 +154,6 @@
     .times{grid-template-columns:1fr 1fr;}
     .actions .btn{flex:0 1 auto;}
   }
-  @media (max-width:380px){ .times{grid-template-columns:1fr;} }
   @media print{ body{background:#fff;} .no-print{display:none!important;} }
 </style>
 </head>
@@ -227,7 +226,7 @@
     <div class="t"><div class="n" id="tDays">0</div><div class="l">Days worked</div></div>
   </div>
 
-  <div class="foot">Overtime calculated after 10 hours per day. Your data is saved on this device only. · v5</div>
+  <div class="foot">Overtime calculated after 10 hours per day. Your data is saved on this device only. · v6</div>
 </div>
 
 <div class="toast" id="toast"></div>
