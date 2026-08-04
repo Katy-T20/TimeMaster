@@ -28,7 +28,8 @@
   .wrap{max-width:760px; margin:0 auto; padding:14px;}
 
   /* Header */
-  .topbar{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 4px 14px;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; gap:10px 12px; padding:6px 4px 14px; flex-wrap:wrap;}
+  .topbar > .btn{margin-left:auto;}
   .brand{display:flex; align-items:center; gap:10px; min-width:0;}
   .brand .logo{width:40px;height:40px;border-radius:11px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex:none;}
   .brand .logo svg{width:30px;height:30px;}
@@ -84,10 +85,10 @@
   /* Day cards */
   .day{background:var(--card); border:1px solid var(--line); border-radius:var(--radius-lg); padding:14px; box-shadow:var(--shadow); margin-bottom:10px;}
   .day.is-today{border-color:var(--navy); box-shadow:0 0 0 1px var(--navy);}
-  .day-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:12px;}
-  .day-date{font-size:14px; font-weight:600; color:var(--navy); min-width:0;}
+  .day-head{display:flex; align-items:flex-start; justify-content:space-between; gap:8px 10px; margin-bottom:12px; flex-wrap:wrap;}
+  .day-date{font-size:14px; font-weight:600; color:var(--navy); min-width:0; flex:1 1 auto;}
   .day-date .dow{color:var(--ink-2); font-weight:500; margin-left:6px;}
-  .day-right{display:flex; align-items:center; gap:14px; flex:none;}
+  .day-right{display:flex; align-items:center; gap:14px; flex:0 0 auto; margin-left:auto;}
   .day-summary{display:flex; gap:12px; text-align:center;}
   .day-summary .s-num{font-size:18px; font-weight:600; line-height:1; color:var(--ink);}
   .day-summary .s-num.ot{color:var(--ot-text);}
@@ -122,9 +123,25 @@
   .adjust-inline input[type=time]:focus{outline:2px solid var(--ot); border-color:var(--ot);}
   .manual-entry{margin-top:10px;}
   .manual-entry > label{display:block; font-size:11px; color:var(--ink-2); font-weight:600; margin-bottom:6px; text-transform:uppercase; letter-spacing:.03em;}
-  .completed-row{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .completed-row{display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+  .completed-btns{display:flex; gap:8px; flex:none;}
+  .entry-row{display:flex; flex-direction:column;}
+  .tfields{display:grid; grid-template-columns:1fr;}
   .edit-mini{padding:6px 14px; font-size:13px; flex:none;}
   .edit-done{margin-top:10px; padding:9px 16px; font-size:14px;}
+  .edit-label{font-size:11px; color:var(--ink-2); font-weight:600; margin:12px 0 8px; text-transform:uppercase; letter-spacing:.03em;}
+  .edit-label.ot-label{color:var(--ot-text);}
+  .tfield{margin-bottom:10px;}
+  .tfield > label{display:block; font-size:11px; color:var(--ink-2); margin-bottom:5px; text-transform:uppercase; letter-spacing:.03em;}
+  .tcell{display:flex; align-items:center; gap:2px; background:var(--field); border:1px solid var(--line-strong); border-radius:9px; height:46px; padding:6px 12px; width:100%; max-width:230px; box-sizing:border-box;}
+  .tcell:focus-within{outline:2px solid var(--navy); border-color:var(--navy);}
+  .tin{width:2.4ch; min-width:0; border:none; background:transparent; font-family:inherit; font-size:16px; color:var(--ink); text-align:center; padding:4px 0;}
+  .tin:focus{outline:none;}
+  .tap{border:none; background:transparent; font-family:inherit; font-size:16px; color:var(--ink); margin-left:auto; padding:4px 2px; cursor:pointer;}
+  .tap:focus{outline:none;}
+  .tcolon{font-weight:700; color:var(--ink-2); font-size:16px;}
+  .edit-btns{display:flex; gap:8px; margin-top:12px;}
+  .edit-btns .btn{flex:0 0 auto;}
 
   .metrics{display:flex; gap:16px; margin-bottom:12px;}
   .metric .m-num{font-size:19px; font-weight:600; color:var(--ink);}
@@ -163,7 +180,11 @@
 
   @media (min-width:620px){
     .stats{grid-template-columns:repeat(3,1fr);}
-    .times{grid-template-columns:1fr 1fr;}
+    .entry-row{flex-direction:row; align-items:flex-end; justify-content:center; gap:16px;}
+    .tfields{display:flex; gap:18px;}
+    .tfields .tfield{text-align:center;}
+    .tfields .tcell{width:180px; margin:0 auto;}
+    .entry-row .edit-btns{margin-top:0;}
     .actions .btn{flex:0 1 auto;}
   }
   @media print{ body{background:#fff;} .no-print{display:none!important;} }
@@ -187,9 +208,9 @@
         <p style="font-weight:600; color:var(--navy); font-size:13px;">Supremacy Services</p>
       </div>
     </div>
-    <button class="btn no-print" onclick="openPreview()">
+    <button class="btn btn-burg no-print" onclick="openPreview()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-      Print / PDF
+      Submit PDF / Print
     </button>
   </div>
 
@@ -205,14 +226,6 @@
       <div class="pill" id="periodLabel">—</div>
       <button class="iconbtn" onclick="shiftPeriod(1)" aria-label="Next period"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
     </div>
-  </div>
-
-  <div class="actions no-print">
-    <button class="btn btn-burg" onclick="openPreview()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-      Submit timesheet (PDF)
-    </button>
-    <button class="btn btn-danger" onclick="clearPeriod()">Clear period</button>
   </div>
 
   <div class="stats">
@@ -238,7 +251,7 @@
     <div class="t"><div class="n" id="tDays">0</div><div class="l">Days worked</div></div>
   </div>
 
-  <div class="foot">Overtime calculated after 10 hours per day. Your data is saved on this device only. · v7</div>
+  <div class="foot">Overtime calculated after 10 hours per day. Your data is saved on this device only. · v12</div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -281,6 +294,7 @@ const DOW = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 let viewYear, viewMonth, viewHalf; // half: 0 = 1–15, 1 = 16–end
 let data = load();
 const editing = new Set();          // completed-day keys currently reopened for editing
+const editSnapshot = {};            // pre-edit copies, for Cancel
 
 /* ---------- storage ---------- */
 function load(){ try{ return JSON.parse(localStorage.getItem("payrollgo_v1")) || {name:"", days:{}}; }catch(e){ return {name:"", days:{}}; } }
@@ -327,61 +341,147 @@ function calcHours(inV, outV){
 }
 function fmt(n){ return (Math.round(n*10)/10).toFixed(1); }
 
-/* ---------- day time section (live clock + manual for missed days) ---------- */
+/* ---------- time field: one cell (hour : minute typed, AM/PM dropdown) ---------- */
+function timeFieldHTML(key, field, label){
+  const rec=data.days[key]||{};
+  const val=(field==="in"?rec.in:rec.out)||"";
+  let h="", m="", ap="AM";
+  if(val){ const [H,M]=val.split(":").map(Number); ap=H>=12?"PM":"AM"; h=H%12||12; m=pad(M); }
+  return `<div class="tfield">
+    <label>${label}</label>
+    <div class="tcell">
+      <input class="tin" type="text" inputmode="numeric" maxlength="2" placeholder="--" value="${h}" data-k="${key}" data-f="${field}" data-p="h" aria-label="${label} hour">
+      <span class="tcolon">:</span>
+      <input class="tin" type="text" inputmode="numeric" maxlength="2" placeholder="--" value="${m}" data-k="${key}" data-f="${field}" data-p="m" aria-label="${label} minute">
+      <select class="tap" data-k="${key}" data-f="${field}" data-p="ap" aria-label="${label} AM or PM">
+        <option${ap==="AM"?" selected":""}>AM</option>
+        <option${ap==="PM"?" selected":""}>PM</option>
+      </select>
+    </div>
+  </div>`;
+}
+
+/* ---------- day time section (live clock + dropdown entry) ---------- */
 function timeSectionHTML(rec,key,isToday){
   const hasIn=!!rec.in, hasOut=!!rec.out;
 
-  // Completed day (in AND out) → locked, with an Edit button for accidental clock-outs
+  // Completed day → locked, with Edit + Clear. Edit reopens fields with Done + Cancel.
   if(hasIn && hasOut){
     if(editing.has(key)){
-      return `<div class="clock-area"><div class="manual-entry">
-        <label>Edit times — will be marked “Edited”</label>
-        <div class="times">
-          <div class="field"><label>Time in</label><input type="time" value="${rec.in}" data-k="${key}" data-f="in"></div>
-          <div class="field"><label>Time out</label><input type="time" value="${rec.out}" data-k="${key}" data-f="out"></div>
+      return `<div class="clock-area">
+        <div class="edit-label">Edit times — will be marked “Edited”</div>
+        <div class="entry-row">
+          <div class="tfields">
+            ${timeFieldHTML(key,"in","Time in")}
+            ${timeFieldHTML(key,"out","Time out")}
+          </div>
+          <div class="edit-btns">
+            <button class="btn btn-navy" onclick="doneEdit('${key}')">Done</button>
+            <button class="btn" onclick="cancelEdit('${key}')">Cancel</button>
+          </div>
         </div>
-        <button class="btn btn-navy edit-done" onclick="doneEdit('${key}')">Done</button>
-      </div></div>`;
+      </div>`;
     }
     return `<div class="clock-area"><div class="completed-row">
       <div class="stamp">In <b>${to12(rec.in)}</b> &nbsp;—&nbsp; Out <b>${to12(rec.out)}</b></div>
-      <button class="btn edit-mini" onclick="editDay('${key}')">Edit</button>
+      <div class="completed-btns">
+        <button class="btn edit-mini" onclick="editDay('${key}')">Edit</button>
+        <button class="btn btn-danger edit-mini" onclick="clearDay('${key}')">Clear</button>
+      </div>
     </div></div>`;
   }
 
-  // Clocked in but no clock-out → live Clock out (today) + Adjust field
+  // Clocked in but no clock-out → live Clock out (today) + set-out dropdowns + Clear
   if(hasIn && !hasOut){
     let h=`<div class="stamp">Clocked in <b>${to12(rec.in)}</b></div>`;
     if(isToday) h+=`<button class="btn btn-navy big" onclick="clockNow('${key}','out')">Clock out</button>`;
-    h+=`<div class="adjust-inline">
-        <label>Set clock-out time below (If Missed)</label>
-        <input type="time" value="${rec.out}" data-k="${key}" data-f="out">
-      </div>`;
+    h+=`<div class="edit-label ot-label">Set clock-out time (if missed)</div>
+        ${timeFieldHTML(key,"out","Time out")}
+        <div class="edit-btns"><button class="btn btn-danger" onclick="clearDay('${key}')">Clear day</button></div>`;
     return `<div class="clock-area">${h}</div>`;
   }
 
   // No clock-in yet
   const t0=new Date(); t0.setHours(0,0,0,0);
   const [yy,mm,dd]=key.split("-").map(Number);
-  const isFuture = new Date(yy,mm-1,dd) > t0;
-  if(isFuture){
-    return `<div class="clock-area"><div class="stamp muted">No hours yet</div></div>`;
-  }
+  const isFuture=new Date(yy,mm-1,dd)>t0;
+  if(isFuture) return `<div class="clock-area"><div class="stamp muted">No hours yet</div></div>`;
 
-  // Today (missed clock-in) or a past missed day → live Clock in (today) + manual entry
+  // Today (missed clock-in) or a past missed day → live Clock in (today) + manual dropdowns
   let h="";
   if(isToday) h+=`<button class="btn btn-clockin big" onclick="clockNow('${key}','in')">Clock in</button>`;
-  h+=`<div class="manual-entry">
-      <label>${isToday ? "Or enter manually if needed" : "Add times manually if needed"}</label>
-      <div class="times">
-        <div class="field"><label>Time in</label><input type="time" value="${rec.in}" data-k="${key}" data-f="in"></div>
-        <div class="field"><label>Time out</label><input type="time" value="${rec.out}" data-k="${key}" data-f="out"></div>
-      </div>
-    </div>`;
+  h+=`<div class="edit-label">${isToday?"Or enter manually if needed":"Add times manually if needed"}</div>
+      <div class="entry-row">
+        <div class="tfields">
+          ${timeFieldHTML(key,"in","Time in")}
+          ${timeFieldHTML(key,"out","Time out")}
+        </div>
+        <div class="edit-btns entry-btns" hidden>
+          <button class="btn btn-navy" onclick="doneEdit('${key}')">Save</button>
+        </div>
+      </div>`;
   return `<div class="clock-area">${h}</div>`;
 }
-function editDay(key){ editing.add(key); render(); }
-function doneEdit(key){ editing.delete(key); render(); }
+function editDay(key){ editSnapshot[key]=JSON.stringify(data.days[key]||null); editing.add(key); render(); }
+function doneEdit(key){ delete editSnapshot[key]; editing.delete(key); render(); }
+function cancelEdit(key){
+  const snap=editSnapshot[key];
+  if(snap!==undefined){ const v=JSON.parse(snap); if(v===null) delete data.days[key]; else data.days[key]=v; delete editSnapshot[key]; save(); }
+  editing.delete(key); render();
+}
+function clearDay(key){ if(!confirm("Please confirm we want to Delete the information for this specific day")) return; delete data.days[key]; delete editSnapshot[key]; editing.delete(key); save(); render(); toast("Day cleared"); }
+function refreshSummaries(){
+  let pH=0,pO=0,dw=0;
+  periodDays().forEach(d=>{
+    const key=keyFor(viewYear,viewMonth,d);
+    const rec=data.days[key]||{in:"",out:""};
+    const hrs=calcHours(rec.in,rec.out); const ot=Math.max(0,hrs-OT_THRESHOLD);
+    if(hrs>0){pH+=hrs;pO+=ot;dw++;}
+    const hEl=document.querySelector(`.s-num[data-h="${key}"]`);
+    const oEl=document.querySelector(`.s-num[data-o="${key}"]`);
+    if(hEl) hEl.textContent=fmt(hrs);
+    if(oEl) oEl.textContent=fmt(ot);
+  });
+  document.getElementById("periodHours").textContent=fmt(pH);
+  document.getElementById("periodOT").textContent=fmt(pO);
+  document.getElementById("tHours").textContent=fmt(pH);
+  document.getElementById("tOT").textContent=fmt(pO);
+  document.getElementById("tDays").textContent=dw;
+  const now=new Date();
+  renderTodayStat(keyFor(now.getFullYear(),now.getMonth(),now.getDate()));
+}
+function markCardSaved(card, rec){
+  if(!card) return;
+  const sv=card.querySelector(".saved");
+  if(sv){ sv.classList.add("ok"); sv.innerHTML='<span class="dot"></span>Saved'; }
+  if(rec.edited && !card.querySelector(".edited-chip")){
+    const dd=card.querySelector(".day-date");
+    if(dd) dd.insertAdjacentHTML("beforeend",'<span class="edited-chip">Edited</span>');
+  }
+}
+function onTimeChange(e){
+  const cell=e.target.closest(".tcell");
+  const k=e.target.dataset.k, f=e.target.dataset.f;
+  const hEl=cell.querySelector('[data-p="h"]'), mEl=cell.querySelector('[data-p="m"]');
+  let H=parseInt(hEl.value,10), M=parseInt(mEl.value,10);
+  const ap=cell.querySelector('[data-p="ap"]').value;
+  const rec=ensure(k);
+  if(isNaN(H) || isNaN(M) || hEl.value.trim()==="" || mEl.value.trim()===""){
+    rec[f]="";
+  } else {
+    H=Math.min(12,Math.max(1,H)); M=Math.min(59,Math.max(0,M));
+    hEl.value=H; mEl.value=pad(M);              // tidy display
+    let H24=H%12; if(ap==="PM") H24+=12;
+    rec[f]=`${pad(H24)}:${pad(M)}`;
+  }
+  rec.saved=true; rec.edited=true;
+  save();
+  refreshSummaries();
+  const card=e.target.closest(".day");
+  markCardSaved(card, rec);
+  const eb=card && card.querySelector(".entry-btns");
+  if(eb) eb.hidden = !(rec.in || rec.out);
+}
 
 /* ---------- render ---------- */
 function render(){
@@ -408,7 +508,7 @@ function render(){
     el.className="day"+(isToday?" is-today":"");
     el.innerHTML=`
       <div class="day-head">
-        <div class="day-date">${pad(viewMonth+1)}/${pad(d)}/${viewYear}<span class="dow">${dow}</span>${isToday?'<span class="today-tag">Today</span>':''}${rec.edited?'<span class="edited-chip">Edited</span>':''}</div>
+        <div class="day-date">${pad(viewMonth+1)}/${pad(d)}/${viewYear} <span class="dow">${dow}</span> ${isToday?'<span class="today-tag">Today</span>':''} ${rec.edited?'<span class="edited-chip">Edited</span>':''}</div>
         <div class="day-right">
           <div class="day-summary">
             <div><div class="s-num" data-h="${key}">${fmt(hours)}</div><div class="s-lbl">Hrs</div></div>
@@ -420,14 +520,14 @@ function render(){
       ${timeSectionHTML(rec,key,isToday)}
       <div class="notes-wrap">
         <label><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>Notes / job address</label>
-        <textarea class="notes" data-k="${key}" data-f="notes" placeholder="Address, Job done, Etc.">${rec.notes||""}</textarea>
+        <textarea class="notes" data-k="${key}" data-f="notes" placeholder="Job address, work done, etc.">${rec.notes||""}</textarea>
       </div>`;
     container.appendChild(el);
   });
 
-  // autosize + listeners
-  container.querySelectorAll("input[type=time]").forEach(inp=>{
-    inp.addEventListener("change", onFieldChange);
+  // listeners
+  container.querySelectorAll(".tcell input, .tcell select").forEach(el=>{
+    el.addEventListener("change", onTimeChange);
   });
   container.querySelectorAll("textarea.notes").forEach(t=>{
     autosize(t);
