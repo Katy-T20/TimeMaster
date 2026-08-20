@@ -754,12 +754,8 @@ function buildPDF(){
     if(hrs>0){periodHours+=hrs;periodOT+=ot;daysWorked++;}
     if(rec.edited && (rec.in||rec.out)) anyEdited=true;
     const io = (rec.in||rec.out) ? `${to12(rec.in)} - ${to12(rec.out)}${rec.edited?" *":""}` : "";
-    rows.push([`${pad(viewMonth+1)}/${pad(d)}`, dow, io, hrs?fmt(hrs):"", hrs?fmt(ot):"", rec.notes||""]);
-    if(hrs>0){
-      rows.push([
-        {content:"",employerSpace:true}, "", "", "", "", ""
-      ]);
-    }
+    const dateCell=hrs>0?{content:`${pad(viewMonth+1)}/${pad(d)}`,workedSpace:true}:`${pad(viewMonth+1)}/${pad(d)}`;
+    rows.push([dateCell, dow, io, hrs?fmt(hrs):"", hrs?fmt(ot):"", rec.notes||""]);
   });
 
   doc.setTextColor(67,56,202); doc.setFont(undefined,"bold"); doc.setFontSize(16);
@@ -774,23 +770,22 @@ function buildPDF(){
   doc.setFont(undefined,"normal"); doc.setFontSize(9); doc.setTextColor(90);
   doc.text(`Total ${fmt(periodHours)}  ·  OT ${fmt(periodOT)}  ·  ${daysWorked} days`, W-M, 84, {align:"right"});
 
-  rows.push([{content:"TOTALS",colSpan:3,styles:{halign:"right",fontStyle:"bold"}}, {content:fmt(periodHours),styles:{fontStyle:"bold"}}, {content:fmt(periodOT),styles:{fontStyle:"bold",textColor:[194,65,12]}}, ""]);
+  rows.push([{content:"TOTALS",colSpan:3,styles:{halign:"center",fontStyle:"bold"}}, {content:fmt(periodHours),styles:{fontStyle:"bold"}}, {content:fmt(periodOT),styles:{fontStyle:"bold",textColor:[194,65,12]}}, ""]);
 
   doc.autoTable({
     startY:98, margin:{left:M,right:M},
     head:[["DATE","DAY","TIME IN - OUT","HRS","OT","NOTES"]],
     body:rows,
     styles:{fontSize:8, cellPadding:3.5, lineColor:[210,215,222], lineWidth:.5, textColor:[30,39,53], valign:"middle"},
-    headStyles:{fillColor:[67,56,202], textColor:255, fontStyle:"bold", halign:"left"},
-    columnStyles:{0:{cellWidth:50},1:{cellWidth:34},2:{cellWidth:125,overflow:"hidden"},3:{cellWidth:50,halign:"center",overflow:"hidden"},4:{cellWidth:34,halign:"center",overflow:"hidden"},5:{cellWidth:"auto"}},
+    headStyles:{fillColor:[67,56,202], textColor:255, fontStyle:"bold", halign:"center"},
+    columnStyles:{0:{cellWidth:50},1:{cellWidth:34},2:{cellWidth:125,halign:"center",overflow:"hidden"},3:{cellWidth:50,halign:"center",overflow:"hidden"},4:{cellWidth:34,halign:"center",overflow:"hidden"},5:{cellWidth:"auto"}},
     didParseCell:function(h){
       const first=h.row.raw && h.row.raw[0];
       if(h.section!=="body") return;
       if(first && first.content==="TOTALS") h.cell.styles.fillColor=[236,239,243];
-      else if(first && first.employerSpace){
-        h.cell.styles.fillColor=[255,255,255];
-        h.cell.styles.minCellHeight=12;
-        h.cell.styles.cellPadding=2;
+      else if(first && first.workedSpace){
+        h.cell.styles.minCellHeight=24;
+        h.cell.styles.valign="top";
       } else if(h.row.index%2===0) h.cell.styles.fillColor=[248,250,252];
     }
   });
