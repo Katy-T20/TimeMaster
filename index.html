@@ -745,15 +745,22 @@ function buildPDF(){
 
   // header
   let periodHours=0,periodOT=0,daysWorked=0,anyEdited=false;
-  const rows=periodDays().map(d=>{
+  const rows=[];
+  periodDays().forEach(d=>{
     const key=keyFor(viewYear,viewMonth,d);
     const rec=data.days[key]||{in:"",out:"",notes:""};
     const dow=DOW[new Date(viewYear,viewMonth,d).getDay()];
     const hrs=calcHours(rec.in,rec.out); const ot=Math.max(0,hrs-OT_THRESHOLD);
     if(hrs>0){periodHours+=hrs;periodOT+=ot;daysWorked++;}
     if(rec.edited && (rec.in||rec.out)) anyEdited=true;
-    const io = (rec.in||rec.out) ? `${to12(rec.in)} – ${to12(rec.out)}${rec.edited?" *":""}` : "";
-    return [`${pad(viewMonth+1)}/${pad(d)}`, dow, io, hrs?fmt(hrs):"", ot?fmt(ot):"", rec.notes||""];
+    const io = (rec.in||rec.out) ? `${to12(rec.in)} - ${to12(rec.out)}${rec.edited?" *":""}` : "";
+    rows.push([`${pad(viewMonth+1)}/${pad(d)}`, dow, io, hrs?fmt(hrs):"", hrs?fmt(ot):"", rec.notes||""]);
+    if(hrs>0){
+      rows.push([
+        {content:"EMPLOYER",styles:{fontSize:6.5,fontStyle:"bold",textColor:[109,40,217]}},
+        "", "________________________", "________", "______", "Adjustment: ______________________________"
+      ]);
+    }
   });
 
   doc.setTextColor(67,56,202); doc.setFont(undefined,"bold"); doc.setFontSize(16);
@@ -772,13 +779,22 @@ function buildPDF(){
 
   doc.autoTable({
     startY:98, margin:{left:M,right:M},
-    head:[["DATE","DAY","TIME IN – OUT","HRS","OT","NOTES"]],
+    head:[["DATE","DAY","TIME IN - OUT","HRS","OT","NOTES"]],
     body:rows,
-    styles:{fontSize:8.5, cellPadding:4, lineColor:[210,215,222], lineWidth:.5, textColor:[30,39,53], valign:"top"},
+    styles:{fontSize:8, cellPadding:3.5, lineColor:[210,215,222], lineWidth:.5, textColor:[30,39,53], valign:"middle"},
     headStyles:{fillColor:[67,56,202], textColor:255, fontStyle:"bold", halign:"left"},
-    columnStyles:{0:{cellWidth:52},1:{cellWidth:34},2:{cellWidth:110},3:{cellWidth:34,halign:"center"},4:{cellWidth:34,halign:"center"},5:{cellWidth:"auto"}},
-    alternateRowStyles:{fillColor:[248,250,252]},
-    didParseCell:function(h){ if(h.row.raw && h.row.raw[0] && h.row.raw[0].content==="TOTALS"){ h.cell.styles.fillColor=[236,239,243]; } }
+    columnStyles:{0:{cellWidth:50},1:{cellWidth:34},2:{cellWidth:125,overflow:"hidden"},3:{cellWidth:50,halign:"center",overflow:"hidden"},4:{cellWidth:34,halign:"center",overflow:"hidden"},5:{cellWidth:"auto"}},
+    didParseCell:function(h){
+      const first=h.row.raw && h.row.raw[0];
+      if(first && first.content==="TOTALS") h.cell.styles.fillColor=[236,239,243];
+      else if(first && first.content==="EMPLOYER"){
+        h.cell.styles.fillColor=[245,247,255];
+        h.cell.styles.minCellHeight=12;
+        h.cell.styles.cellPadding=2;
+        h.cell.styles.fontSize=h.column.index===0?6.5:7;
+        h.cell.styles.textColor=h.column.index===0?[109,40,217]:[100,106,125];
+      } else if(h.row.index%2===0) h.cell.styles.fillColor=[248,250,252];
+    }
   });
 
   // signatures
