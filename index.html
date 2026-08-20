@@ -757,8 +757,7 @@ function buildPDF(){
     rows.push([`${pad(viewMonth+1)}/${pad(d)}`, dow, io, hrs?fmt(hrs):"", hrs?fmt(ot):"", rec.notes||""]);
     if(hrs>0){
       rows.push([
-        {content:"EMPLOYER",styles:{fontSize:6.5,fontStyle:"bold",textColor:[109,40,217]}},
-        "", "________________________", "________", "______", "Adjustment: ______________________________"
+        {content:"",employerSpace:true}, "", "", "", "", ""
       ]);
     }
   });
@@ -786,13 +785,12 @@ function buildPDF(){
     columnStyles:{0:{cellWidth:50},1:{cellWidth:34},2:{cellWidth:125,overflow:"hidden"},3:{cellWidth:50,halign:"center",overflow:"hidden"},4:{cellWidth:34,halign:"center",overflow:"hidden"},5:{cellWidth:"auto"}},
     didParseCell:function(h){
       const first=h.row.raw && h.row.raw[0];
+      if(h.section!=="body") return;
       if(first && first.content==="TOTALS") h.cell.styles.fillColor=[236,239,243];
-      else if(first && first.content==="EMPLOYER"){
-        h.cell.styles.fillColor=[245,247,255];
+      else if(first && first.employerSpace){
+        h.cell.styles.fillColor=[255,255,255];
         h.cell.styles.minCellHeight=12;
         h.cell.styles.cellPadding=2;
-        h.cell.styles.fontSize=h.column.index===0?6.5:7;
-        h.cell.styles.textColor=h.column.index===0?[109,40,217]:[100,106,125];
       } else if(h.row.index%2===0) h.cell.styles.fillColor=[248,250,252];
     }
   });
